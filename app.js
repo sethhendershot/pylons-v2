@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -68,7 +70,38 @@ app.get('/admin', requireAuth, requireAdmin, (req, res) => {
 });
 
 app.get('/admin/users', requireAuth, requireAdmin, (req, res) => {
-  res.render('admin-users', { user: req.session.user });
+  const userList = Object.keys(users).map(username => ({
+    username,
+    role: users[username].role
+  }));
+  res.render('admin-users', { user: req.session.user, users: userList });
+});
+
+app.post('/admin/users/add', requireAuth, requireAdmin, (req, res) => {
+  const { username, password, role } = req.body;
+
+  // Basic validation
+  if (!username || !password || !role) {
+    return res.status(400).send('All fields are required');
+  }
+
+  if (users[username]) {
+    return res.status(400).send('User already exists');
+  }
+
+  if (!['Admin', 'User'].includes(role)) {
+    return res.status(400).send('Invalid role');
+  }
+
+  // Add to users object
+  users[username] = { password, role };
+
+  // Persist to .env
+  const envPath = path.join(__dirname, '.env');
+  const envEntry = `\n${username.toUpperCase()}_USERNAME=${username}\n${username.toUpperCase()}_PASSWORD=${password}\n${username.toUpperCase()}_ROLE=${role}\n`;
+  fs.appendFileSync(envPath, envEntry);
+
+  res.redirect('/admin/users');
 });
 
 app.get('/admin/logs', requireAuth, requireAdmin, (req, res) => {
