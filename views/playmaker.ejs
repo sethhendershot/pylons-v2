@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlayMaker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <%- include('menu') %>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="h3 mb-0">PlayMaker</h1>
+          </div>
+          <div class="card-body">
+            <p>Welcome to PlayMaker, <%= user.username %>!</p>
+            <p>This is where you can create and manage plays.</p>
+            <!-- Add PlayMaker specific content here -->
+            <div class="alert alert-info">
+              <h5>Features</h5>
+              <ul>
+                <li>Create new plays</li>
+                <li>Edit existing plays</li>
+                <li>Share plays with team</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

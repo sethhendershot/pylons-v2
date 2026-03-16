@@ -65,6 +65,18 @@ app.get('/profile', requireAuth, (req, res) => {
   res.render('profile', { user: req.session.user });
 });
 
+app.get('/playmaker', requireAuth, (req, res) => {
+  res.render('playmaker', { user: req.session.user });
+});
+
+app.get('/playtracker', requireAuth, (req, res) => {
+  res.render('playtracker', { user: req.session.user });
+});
+
+app.get('/reports', requireAuth, (req, res) => {
+  res.render('reports', { user: req.session.user });
+});
+
 app.get('/admin', requireAuth, requireAdmin, (req, res) => {
   res.render('admin', { user: req.session.user });
 });
