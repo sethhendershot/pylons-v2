@@ -9,6 +9,7 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static('public'));
 
 app.use(session({
@@ -127,6 +128,51 @@ app.get('/admin/settings', requireAuth, requireAdmin, (req, res) => {
 app.post('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
+});
+
+const playsFile = path.join(__dirname, 'plays.json');
+
+// API routes for plays
+app.get('/api/plays', requireAuth, (req, res) => {
+  try {
+    const plays = JSON.parse(fs.readFileSync(playsFile, 'utf8'));
+    res.json(plays);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+app.post('/api/plays', requireAuth, (req, res) => {
+  const plays = JSON.parse(fs.readFileSync(playsFile, 'utf8'));
+  const newPlay = { id: Date.now(), ...req.body };
+  plays.push(newPlay);
+  fs.writeFileSync(playsFile, JSON.stringify(plays, null, 2));
+  res.json(newPlay);
+});
+
+app.put('/api/plays/:id', requireAuth, (req, res) => {
+  const plays = JSON.parse(fs.readFileSync(playsFile, 'utf8'));
+  const id = parseInt(req.params.id);
+  const index = plays.findIndex(p => p.id === id);
+  if (index !== -1) {
+    plays[index] = { ...plays[index], ...req.body };
+    fs.writeFileSync(playsFile, JSON.stringify(plays, null, 2));
+    res.json(plays[index]);
+  } else {
+    res.status(404).json({ error: 'Play not found' });
+  }
+});
+
+app.delete('/api/plays/:id', requireAuth, (req, res) => {
+  const plays = JSON.parse(fs.readFileSync(playsFile, 'utf8'));
+  const id = parseInt(req.params.id);
+  const filtered = plays.filter(p => p.id !== id);
+  if (filtered.length < plays.length) {
+    fs.writeFileSync(playsFile, JSON.stringify(filtered, null, 2));
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: 'Play not found' });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
