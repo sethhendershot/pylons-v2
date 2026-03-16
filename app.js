@@ -4,6 +4,8 @@ const express = require('express');
 const session = require('express-session');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
+const csv = require('csv-parser');
 
 const app = express();
 
@@ -11,6 +13,9 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
+
+// Multer configuration for file uploads
+const upload = multer({ dest: 'uploads/' });
 
 app.use(session({
   secret: 'Rkwb8E9UKieaukOmvcedyD0VkFy30gLxGxxDecJNkvGDhnO1fcJrikje5B2q3l6N', // Change this to a secure secret
@@ -173,6 +178,86 @@ app.delete('/api/plays/:id', requireAuth, (req, res) => {
   } else {
     res.status(404).json({ error: 'Play not found' });
   }
+});
+
+// Route for importing HUDL CSV
+app.post('/api/plays/import', requireAuth, upload.single('hudlFile'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const results = [];
+  fs.createReadStream(req.file.path)
+    .pipe(csv())
+    .on('data', (data) => results.push(data))
+    .on('end', () => {
+      // Remove empty rows
+      const filteredResults = results.filter(row => Object.values(row).some(val => val && val.trim() !== ''));
+
+      // Transform to match the expected format
+      const plays = filteredResults.map((row, index) => ({
+        id: Date.now() + index,
+        playNumber: row['PLAY #'] ? parseInt(row['PLAY #']) : null,
+        odk: row['ODK'] || '',
+        dn: row['DN'] ? parseInt(row['DN']) : null,
+        dist: row['DIST'] ? parseInt(row['DIST']) : null,
+        hash: row['HASH'] || '',
+        yardLn: row['YARD LN'] ? parseInt(row['YARD LN']) : null,
+        playType: row['PLAY TYPE'] || '',
+        result: row['RESULT'] || '',
+        gnLs: row['GN/LS'] || '',
+        offForm: row['OFF FORM'] || '',
+        offPlay: row['OFF PLAY'] || '',
+        offStr: row['OFF STR'] || '',
+        playDir: row['PLAY DIR'] || '',
+        gap: row['GAP'] || '',
+        passZone: row['PASS ZONE'] || '',
+        defFront: row['DEF FRONT'] || '',
+        coverage: row['COVERAGE'] || '',
+        blitz: row['BLITZ'] || '',
+        qtr: row['QTR'] ? parseInt(row['QTR']) : null
+      }));
+
+      // Load existing plays
+      let existingPlays = [];
+      try {
+        existingPlays = JSON.parse(fs.readFileSync(playsFile, 'utf8'));
+      } catch (err) {
+        // File doesn't exist or is empty
+      }
+
+      // Append new plays
+      const updatedPlays = existingPlays.concat(plays);
+      fs.writeFileSync(playsFile, JSON.stringify(updatedPlays, null, 2));
+
+      // Clean up uploaded file
+      fs.unlinkSync(req.file.path);
+
+      res.json({ success: true, imported: plays.length });
+    })
+    .on('error', (err) => {
+      res.status(500).json({ error: 'Error parsing CSV' });
+    });
+});
+
+const gamesFile = path.join(__dirname, 'games.json');
+
+// API routes for games
+app.get('/api/games', requireAuth, (req, res) => {
+  try {
+    const games = JSON.parse(fs.readFileSync(gamesFile, 'utf8'));
+    res.json(games);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+app.post('/api/games', requireAuth, (req, res) => {
+  const games = JSON.parse(fs.readFileSync(gamesFile, 'utf8'));
+  const newGame = { id: Date.now(), ...req.body };
+  games.push(newGame);
+  fs.writeFileSync(gamesFile, JSON.stringify(games, null, 2));
+  res.json({ success: true, game: newGame });
 });
 
 const PORT = process.env.PORT || 3000;

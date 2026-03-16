@@ -18,15 +18,34 @@
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-0">PlayTracker</h1>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPlayModal">Add New Play</button>
+            <div>
+              <button class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importHudlModal">Import HUDL</button>
+              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPlayModal">Add New Play</button>
+            </div>
           </div>
           <div class="card-body">
             <p>Welcome to PlayTracker, <%= user.username %>!</p>
             <p>Track and analyze your plays here.</p>
+            
+            <!-- Game Selection -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="gameSelect" class="form-label">Select Game:</label>
+                <select class="form-select" id="gameSelect">
+                  <option value="">Select a game...</option>
+                  <!-- Games will be loaded here -->
+                </select>
+                <div id="noGamesMessage" class="mt-2" style="display: none;">
+                  <small class="text-muted">No games available. <a href="#" id="addFirstGameLink">Add your first game</a> to get started.</small>
+                </div>
+              </div>
+            </div>
+            
             <table id="playsTable" class="table table-striped">
               <thead>
                 <tr>
                   <th>PLAY #</th>
+                  <th>GAME</th>
                   <th>ODK</th>
                   <th>DN</th>
                   <th>DIST</th>
@@ -37,13 +56,6 @@
                   <th>GN/LS</th>
                   <th>OFF FORM</th>
                   <th>OFF PLAY</th>
-                  <th>OFF STR</th>
-                  <th>PLAY DIR</th>
-                  <th>GAP</th>
-                  <th>PASS ZONE</th>
-                  <th>DEF FRONT</th>
-                  <th>COVERAGE</th>
-                  <th>BLITZ</th>
                   <th>QTR</th>
                   <th>Actions</th>
                 </tr>
@@ -70,6 +82,16 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label">PLAY #</label>
                 <input type="number" class="form-control" name="playNumber" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Game</label>
+                <select class="form-select" name="gameId" id="createPlayGameSelect" required>
+                  <option value="">Select a game...</option>
+                  <!-- Games will be loaded here -->
+                </select>
+                <div id="createPlayNoGamesNote" class="form-text text-warning" style="display: none;">
+                  No games available. Please add a game first.
+                </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">ODK</label>
@@ -110,34 +132,6 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label">OFF PLAY</label>
                 <input type="text" class="form-control" name="offPlay">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">OFF STR</label>
-                <input type="text" class="form-control" name="offStr">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">PLAY DIR</label>
-                <input type="text" class="form-control" name="playDir">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">GAP</label>
-                <input type="text" class="form-control" name="gap">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">PASS ZONE</label>
-                <input type="text" class="form-control" name="passZone">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">DEF FRONT</label>
-                <input type="text" class="form-control" name="defFront">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">COVERAGE</label>
-                <input type="text" class="form-control" name="coverage">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">BLITZ</label>
-                <input type="text" class="form-control" name="blitz">
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">QTR</label>
@@ -171,6 +165,16 @@
                 <input type="number" class="form-control" name="playNumber" required>
               </div>
               <div class="col-md-6 mb-3">
+                <label class="form-label">Game</label>
+                <select class="form-select" name="gameId" id="editPlayGameSelect" required>
+                  <option value="">Select a game...</option>
+                  <!-- Games will be loaded here -->
+                </select>
+                <div id="editPlayNoGamesNote" class="form-text text-warning" style="display: none;">
+                  No games available. Please add a game first.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
                 <label class="form-label">ODK</label>
                 <input type="text" class="form-control" name="odk">
               </div>
@@ -211,34 +215,6 @@
                 <input type="text" class="form-control" name="offPlay">
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label">OFF STR</label>
-                <input type="text" class="form-control" name="offStr">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">PLAY DIR</label>
-                <input type="text" class="form-control" name="playDir">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">GAP</label>
-                <input type="text" class="form-control" name="gap">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">PASS ZONE</label>
-                <input type="text" class="form-control" name="passZone">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">DEF FRONT</label>
-                <input type="text" class="form-control" name="defFront">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">COVERAGE</label>
-                <input type="text" class="form-control" name="coverage">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">BLITZ</label>
-                <input type="text" class="form-control" name="blitz">
-              </div>
-              <div class="col-md-6 mb-3">
                 <label class="form-label">QTR</label>
                 <input type="number" class="form-control" name="qtr">
               </div>
@@ -253,45 +229,278 @@
     </div>
   </div>
 
+  <!-- View Play Modal -->
+  <div class="modal fade" id="viewPlayModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">View Play Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">PLAY #:</label>
+              <p id="view-playNumber" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">GAME:</label>
+              <p id="view-gameId" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">ODK:</label>
+              <p id="view-odk" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">DN:</label>
+              <p id="view-dn" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">DIST:</label>
+              <p id="view-dist" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">HASH:</label>
+              <p id="view-hash" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">YARD LN:</label>
+              <p id="view-yardLn" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">PLAY TYPE:</label>
+              <p id="view-playType" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">RESULT:</label>
+              <p id="view-result" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">GN/LS:</label>
+              <p id="view-gnLs" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">OFF FORM:</label>
+              <p id="view-offForm" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">OFF PLAY:</label>
+              <p id="view-offPlay" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">OFF STR:</label>
+              <p id="view-offStr" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">PLAY DIR:</label>
+              <p id="view-playDir" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">GAP:</label>
+              <p id="view-gap" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">PASS ZONE:</label>
+              <p id="view-passZone" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">DEF FRONT:</label>
+              <p id="view-defFront" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">COVERAGE:</label>
+              <p id="view-coverage" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">BLITZ:</label>
+              <p id="view-blitz" class="mb-0"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">QTR:</label>
+              <p id="view-qtr" class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Game Modal -->
+  <div class="modal fade" id="addGameModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Game</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="addGameForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="gameName" class="form-label">Game Name</label>
+              <input type="text" class="form-control" id="gameName" name="name" required>
+              <div class="form-text">Enter a descriptive name for the game (e.g., "Bismarck Legacy vs Opponent - 2024-10-17")</div>
+            </div>
+            <div class="mb-3">
+              <label for="gameDate" class="form-label">Game Date</label>
+              <input type="date" class="form-control" id="gameDate" name="date" required>
+            </div>
+            <div class="mb-3">
+              <label for="opponent" class="form-label">Opponent</label>
+              <input type="text" class="form-control" id="opponent" name="opponent" required>
+            </div>
+            <div class="mb-3">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" name="location">
+              <div class="form-text">Optional: Home, Away, or specific venue</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Game</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import HUDL Modal -->
+  <div class="modal fade" id="importHudlModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Import HUDL CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="importHudlForm" enctype="multipart/form-data">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="hudlFile" class="form-label">Select HUDL CSV File</label>
+              <input type="file" class="form-control" id="hudlFile" name="hudlFile" accept=".csv" required>
+              <div class="form-text">Upload a CSV file exported from HUDL with play data.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Import</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     let table;
     let currentEditId = null;
+    let gamesData = []; // Store games data globally
 
     $(document).ready(function() {
-      table = $('#playsTable').DataTable({
-        ajax: '/api/plays',
-        columns: [
-          { data: 'playNumber' },
-          { data: 'odk' },
-          { data: 'dn' },
-          { data: 'dist' },
-          { data: 'hash' },
-          { data: 'yardLn' },
-          { data: 'playType' },
-          { data: 'result' },
-          { data: 'gnLs' },
-          { data: 'offForm' },
-          { data: 'offPlay' },
-          { data: 'offStr' },
-          { data: 'playDir' },
-          { data: 'gap' },
-          { data: 'passZone' },
-          { data: 'defFront' },
-          { data: 'coverage' },
-          { data: 'blitz' },
-          { data: 'qtr' },
-          {
-            data: null,
-            render: function(data, type, row) {
-              return `
-                <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
-              `;
-            }
+      // Load games and populate select
+      loadGames();
+
+      // First, test if we can load data manually
+      fetch('/api/plays', {
+        credentials: 'same-origin'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.status);
           }
-        ]
-      });
+          return response.json();
+        })
+        .then(data => {
+          console.log('Manual fetch successful, data length:', data.length);
+          console.log('First item:', data[0]);
+          
+          // Now initialize DataTable with the data
+          table = $('#playsTable').DataTable({
+            data: data,
+            columns: [
+              { data: 'playNumber' },
+              { 
+                data: 'gameId',
+                render: function(data, type, row) {
+                  return getGameName(data) || '';
+                }
+              },
+              { data: 'odk' },
+              { data: 'dn' },
+              { data: 'dist' },
+              { data: 'hash' },
+              { data: 'yardLn' },
+              { data: 'playType' },
+              { data: 'result' },
+              { data: 'gnLs' },
+              { data: 'offForm' },
+              { data: 'offPlay' },
+              { data: 'qtr' },
+              {
+                data: null,
+                render: function(data, type, row) {
+                  return `
+                    <button class="btn btn-sm btn-info view-btn me-1" data-id="${row.id}">View</button>
+                    <button class="btn btn-sm btn-primary edit-btn me-1" data-id="${row.id}">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
+                  `;
+                }
+              }
+            ]
+          });
+        })
+        .catch(error => {
+          console.error('Manual fetch failed:', error);
+          // Fallback to ajax configuration
+          table = $('#playsTable').DataTable({
+            ajax: {
+              url: '/api/plays',
+              type: 'GET',
+              dataSrc: '',
+              xhrFields: {
+                withCredentials: true
+              },
+              success: function(data) {
+                console.log('Ajax success:', data);
+              },
+              error: function(xhr, error, thrown) {
+                console.error('Ajax error:', error, thrown);
+                console.log('Response:', xhr.responseText);
+              }
+            },
+            columns: [
+              { data: 'playNumber' },
+              { 
+                data: 'gameId',
+                render: function(data, type, row) {
+                  return getGameName(data) || '';
+                }
+              },
+              { data: 'odk' },
+              { data: 'dn' },
+              { data: 'dist' },
+              { data: 'hash' },
+              { data: 'yardLn' },
+              { data: 'playType' },
+              { data: 'result' },
+              { data: 'gnLs' },
+              { data: 'offForm' },
+              { data: 'offPlay' },
+              { data: 'qtr' },
+              {
+                data: null,
+                render: function(data, type, row) {
+                  return `
+                    <button class="btn btn-sm btn-info view-btn me-1" data-id="${row.id}">View</button>
+                    <button class="btn btn-sm btn-primary edit-btn me-1" data-id="${row.id}">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
+                  `;
+                }
+              }
+            ]
+          });
+        });
 
       // Create play
       $('#createPlayForm').on('submit', function(e) {
@@ -302,7 +511,8 @@
         fetch('/api/plays', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
         })
         .then(res => res.json())
         .then(() => {
@@ -310,6 +520,25 @@
           table.ajax.reload();
           this.reset();
         });
+      });
+
+      // View play
+      $('#playsTable').on('click', '.view-btn', function() {
+        const row = table.row($(this).closest('tr')).data();
+        // Populate the view modal with all play data
+        Object.keys(row).forEach(key => {
+          if (key !== 'id') {
+            const element = $(`#view-${key}`);
+            if (element.length) {
+              if (key === 'gameId') {
+                element.text(getGameName(row[key]) || '');
+              } else {
+                element.text(row[key] || '');
+              }
+            }
+          }
+        });
+        $('#viewPlayModal').modal('show');
       });
 
       // Edit play
@@ -334,7 +563,8 @@
         fetch(`/api/plays/${currentEditId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
         })
         .then(res => res.json())
         .then(() => {
@@ -347,11 +577,148 @@
       $('#playsTable').on('click', '.delete-btn', function() {
         const id = $(this).data('id');
         if (confirm('Are you sure you want to delete this play?')) {
-          fetch(`/api/plays/${id}`, { method: 'DELETE' })
+          fetch(`/api/plays/${id}`, { 
+            method: 'DELETE',
+            credentials: 'same-origin'
+          })
           .then(() => table.ajax.reload());
         }
       });
+
+      // Import HUDL
+      $('#importHudlForm').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch('/api/plays/import', {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(`Successfully imported ${data.imported} plays.`);
+            $('#importHudlModal').modal('hide');
+            table.ajax.reload();
+            this.reset();
+          } else {
+            alert('Error importing plays: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Error importing plays.');
+        });
+      });
+
+      // Game select change handler
+      $('#gameSelect').on('change', function() {
+        const selectedValue = $(this).val();
+        if (selectedValue === 'add-new') {
+          $('#addGameModal').modal('show');
+          $(this).val(''); // Reset selection
+        }
+      });
+
+      // Add first game link handler
+      $('#addFirstGameLink').on('click', function(e) {
+        e.preventDefault();
+        $('#addGameModal').modal('show');
+      });
+
+      // Add game form submission
+      $('#addGameForm').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+        
+        fetch('/api/games', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            $('#addGameModal').modal('hide');
+            loadGames(); // Reload the games list
+            this.reset();
+          } else {
+            alert('Error adding game: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Error adding game.');
+        });
+      });
     });
+
+    // Function to load games
+    function loadGames() {
+      fetch('/api/games', {
+        credentials: 'same-origin'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.status + ' ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(games => {
+          gamesData = games; // Store globally
+          
+          const selects = ['#gameSelect', '#createPlayGameSelect', '#editPlayGameSelect'];
+          
+          selects.forEach(selector => {
+            const select = $(selector);
+            // Clear existing options except the first one
+            select.find('option:not(:first)').remove();
+            
+            // Add games
+            games.forEach(game => {
+              select.append(`<option value="${game.id}">${game.name}</option>`);
+            });
+            
+            // Handle no games for play form selects
+            if (games.length === 0 && (selector === '#createPlayGameSelect' || selector === '#editPlayGameSelect')) {
+              select.append('<option value="" disabled>No games available - add a game first</option>');
+            }
+            
+            // Add the "Add New Game" option only to the main game select
+            if (selector === '#gameSelect') {
+              select.append('<option value="add-new">+ Add New Game</option>');
+            }
+          });
+
+          // Handle no games scenario
+          if (games.length === 0) {
+            $('#noGamesMessage').show();
+            $('#createPlayNoGamesNote, #editPlayNoGamesNote').show();
+            // Remove required attribute from play form selects when no games exist
+            $('#createPlayGameSelect, #editPlayGameSelect').removeAttr('required');
+          } else {
+            $('#noGamesMessage').hide();
+            $('#createPlayNoGamesNote, #editPlayNoGamesNote').hide();
+            // Add required attribute back when games exist
+            $('#createPlayGameSelect, #editPlayGameSelect').attr('required', 'required');
+          }
+        })
+        .catch(err => {
+          console.error('Error loading games:', err);
+          // Set empty games data on error
+          gamesData = [];
+          $('#noGamesMessage').show();
+          $('#createPlayNoGamesNote, #editPlayNoGamesNote').show();
+          $('#createPlayGameSelect, #editPlayGameSelect').removeAttr('required');
+        });
+    }
+
+    // Helper function to get game name by ID
+    function getGameName(gameId) {
+      const game = gamesData.find(g => g.id == gameId);
+      return game ? game.name : '';
+    }
   </script>
 </body>
 </html>
