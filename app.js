@@ -67,6 +67,18 @@ app.get('/admin', requireAuth, requireAdmin, (req, res) => {
   res.render('admin', { user: req.session.user });
 });
 
+app.get('/admin/users', requireAuth, requireAdmin, (req, res) => {
+  res.render('admin-users', { user: req.session.user });
+});
+
+app.get('/admin/logs', requireAuth, requireAdmin, (req, res) => {
+  res.render('admin-logs', { user: req.session.user });
+});
+
+app.get('/admin/settings', requireAuth, requireAdmin, (req, res) => {
+  res.render('admin-settings', { user: req.session.user });
+});
+
 app.post('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');

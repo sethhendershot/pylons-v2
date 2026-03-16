@@ -9,23 +9,44 @@
 <body class="bg-light">
   <%- include('menu') %>
   <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
+    <div class="row">
+      <%- include('admin-sidebar', { currentPage: 'dashboard' }) %>
+      <div class="col-md-9">
         <div class="card">
           <div class="card-header">
-            <h1 class="h3 mb-0">Admin Panel</h1>
+            <h1 class="h3 mb-0">Admin Dashboard</h1>
           </div>
           <div class="card-body">
             <h2>Welcome to the Admin Panel, <%= user.username %>!</h2>
             <p>You have administrative privileges.</p>
-            <!-- Add admin-specific features here -->
-            <div class="alert alert-warning">
-              <h5>Admin Features</h5>
-              <ul>
-                <li>Manage users</li>
-                <li>View system logs</li>
-                <li>Configure settings</li>
-              </ul>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">Manage system users</p>
+                    <a href="/admin/users" class="btn btn-primary">Manage Users</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Logs</h5>
+                    <p class="card-text">View system logs</p>
+                    <a href="/admin/logs" class="btn btn-primary">View Logs</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Settings</h5>
+                    <p class="card-text">Configure system settings</p>
+                    <a href="/admin/settings" class="btn btn-primary">Configure</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
