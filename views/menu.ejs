@@ -7,20 +7,20 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/dashboard">Dashboard</a>
+          <a class="nav-link" href="/dashboard"><i class="bi bi-house me-1"></i>Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/playmaker">PlayMaker</a>
+          <a class="nav-link" href="/playmaker"><i class="bi bi-play-circle me-1"></i>PlayMaker</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/playtracker">PlayTracker</a>
+          <a class="nav-link" href="/playtracker"><i class="bi bi-graph-up me-1"></i>PlayTracker</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/reports">Reports</a>
+          <a class="nav-link" href="/reports"><i class="bi bi-file-earmark-bar-graph me-1"></i>Reports</a>
         </li>
         <% if (user && user.role === 'Admin') { %>
         <li class="nav-item">
-          <a class="nav-link" href="/admin">Admin Panel</a>
+          <a class="nav-link" href="/admin"><i class="bi bi-shield me-1"></i>Admin Panel</a>
         </li>
         <% } %>
         <!-- Add more menu items here as needed -->
