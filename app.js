@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-  secret: 'your-secret-key', // Change this to a secure secret
+  secret: 'Rkwb8E9UKieaukOmvcedyD0VkFy30gLxGxxDecJNkvGDhnO1fcJrikje5B2q3l6N', // Change this to a secure secret
   resave: false,
   saveUninitialized: false
 }));
@@ -27,6 +27,15 @@ function requireAuth(req, res, next) {
     return next();
   } else {
     res.redirect('/');
+  }
+}
+
+// Middleware to check admin role
+function requireAdmin(req, res, next) {
+  if (req.session.user && req.session.user.role === 'Admin') {
+    return next();
+  } else {
+    res.status(403).send('Access denied');
   }
 }
 
@@ -48,6 +57,14 @@ app.post('/login', (req, res) => {
 
 app.get('/dashboard', requireAuth, (req, res) => {
   res.render('dashboard', { user: req.session.user });
+});
+
+app.get('/profile', requireAuth, (req, res) => {
+  res.render('profile', { user: req.session.user });
+});
+
+app.get('/admin', requireAuth, requireAdmin, (req, res) => {
+  res.render('admin', { user: req.session.user });
 });
 
 app.post('/logout', (req, res) => {
