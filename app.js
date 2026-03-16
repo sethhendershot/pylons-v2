@@ -1,0 +1,59 @@
+require('dotenv').config();
+
+const express = require('express');
+const session = require('express-session');
+
+const app = express();
+
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+app.use(session({
+  secret: 'your-secret-key', // Change this to a secure secret
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Load users from environment variables
+const users = {
+  [process.env.ADMIN_USERNAME]: { password: process.env.ADMIN_PASSWORD, role: process.env.ADMIN_ROLE },
+  [process.env.USER_USERNAME]: { password: process.env.USER_PASSWORD, role: process.env.USER_ROLE }
+};
+
+// Middleware to check authentication
+function requireAuth(req, res, next) {
+  if (req.session.user) {
+    return next();
+  } else {
+    res.redirect('/');
+  }
+}
+
+// Routes
+app.get('/', (req, res) => {
+  res.render('login', { error: null });
+});
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users[username];
+  if (user && user.password === password) {
+    req.session.user = { username, role: user.role };
+    res.redirect('/dashboard');
+  } else {
+    res.render('login', { error: 'Invalid credentials' });
+  }
+});
+
+app.get('/dashboard', requireAuth, (req, res) => {
+  res.render('dashboard', { user: req.session.user });
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

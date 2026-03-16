@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-webapp",
+  "version": "1.0.0",
+  "description": "A Node.js webapp with Express, EJS, Bootstrap, and session management",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "express-session": "^1.17.3",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
